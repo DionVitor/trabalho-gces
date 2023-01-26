@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  database:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: lappis
+      MONGO_INITDB_ROOT_PASSWORD: lappis
+    volumes:
+      - mongo_volume:/data/db
+    networks:
+      - database_network
+
+volumes:
+  mongo_volume:
+
+networks:
+  database_network:
