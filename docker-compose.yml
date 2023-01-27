@@ -1,6 +1,13 @@
 version: "3.8"
 
 services:
+  python_backend:
+    container_name: backend
+    build: .
+    volumes:
+      - .:/code
+    networks:
+      - database_network
   database:
     container_name: mongo
     image: mongo
