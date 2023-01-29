@@ -1,0 +1,48 @@
+name: CI/CD Master
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build and tag application
+        run: |
+          docker build -t trabalho-gces .
+
+      - name: Create documentation
+        run: | 
+          docker run trabalho-gces sphinx-apidoc -o docs/rst ./src
+          docker run trabalho-gces make html -C docs/
+
+      - name: Run pylint
+        continue-on-error: true
+        run: |
+          docker run trabalho-gces pylint src
+
+      - name: Tests
+        run: |
+          docker run trabalho-gces pytest -x
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Configure PyPI API token
+        run: |
+          ~/.local/share/pypoetry/venv/bin/poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+
+      - name: Build the project and publish on PyPI
+        run: |
+          ~/.local/share/pypoetry/venv/bin/poetry build
+          ~/.local/share/pypoetry/venv/bin/poetry publish

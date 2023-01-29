@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gces-dion-package"
-version = "0.1.0"
+version = "1.0.0"
 description = "Pacote do trabalho de GCES."
 authors = ["dionvitor <dionvictor11@gmail.com>"]
 packages = [{include = "src"}]
